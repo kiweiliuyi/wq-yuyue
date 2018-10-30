@@ -1,0 +1,307 @@
+{php define('MUI', true);}
+{template 'common/header'}
+    <script src="{TEMPLATE_PATH}time/js/mobiscroll_002.js" type="text/javascript"></script>
+	<script src="{TEMPLATE_PATH}time/js/mobiscroll_004.js" type="text/javascript"></script>
+	<link href="{TEMPLATE_PATH}time/css/mobiscroll_002.css" rel="stylesheet" type="text/css">
+	<script src="{TEMPLATE_PATH}time/js/mobiscroll.js" type="text/javascript"></script>
+	<script src="{TEMPLATE_PATH}time/js/mobiscroll_003.js" type="text/javascript"></script>
+	<script src="{TEMPLATE_PATH}time/js/mobiscroll_005.js" type="text/javascript"></script>
+	<link href="{TEMPLATE_PATH}time/css/mobiscroll_003.css" rel="stylesheet" type="text/css">
+<style>
+.am-g{background-color:#f2f2f2;font-weight:300;}
+.am-g .am-form-group{padding:0.5rem 0 0.5rem 0;margin:0 0 1px;background-color:#fff;width:100%;}
+.am-g .am-form-group:last-child{background-color:transparent;}
+.am-g .am-form-group label.am-u-sm-3 {line-height:3rem;}
+
+.am-u-sm-3{padding:0;width:25%;font-size:1.4rem;font-weight:400;text-align:right;padding: 0.5rem 0.5rem 0.5rem 0;line-height:1.8rem;margin:0;}
+.am-u-sm-9{border-bottom: 0px solid #ccc;width:75%;}
+
+.am-form-group .am-u-sm-12{margin:0;}
+
+.description{font-size:1.2rem;line-height:1.6rem;padding:0.5rem 0.5rem 0;}
+.am-thumbnails{margin-left:-2.8rem;}
+.am-thumbnails > li {float:left;padding:0;margin:0;line-height:2rem;height:3.8rem;min-width:50%;list-style:none}
+.am-thumbnails > li .am-checkbox-inline, .am-thumbnails > li .am-radio-inline{background-color:transparent;padding: 0 0 0 2rem;height:1rem;line-height:2rem;}
+
+.am-u-sm-6{padding:0;}
+.am-u-sm-6:first-child{padding-right:0.5rem;}
+
+.am-popup {bottom: 0;top:auto;height: 80%;}
+.am-form-icon [class*='am-icon-'] {left: 2rem;}
+
+.checkbox{padding-top:0.5rem;}
+.dw {
+    position: absolute;
+    top: 0;height:25rem;
+    left: 0;
+}
+.am-u-sm-12 .am-u-sm-10 p{padding:0 0 0.2rem 0;line-height:120%;margin:0;}
+.am-form .am-u-sm-9 input[type="number"]{padding: 0 1rem;color:#f46a04}
+.am-form .am-u-sm-9 .num{color:#f46a04}
+font.iconfont{font-size:2rem;}
+
+.input-group, .input-group a {width:100%;}
+.help-block img{height:auto; width:100%;}
+</style>
+	
+	{if $activity['endtime'] < TIMESTAMP}
+	<div class="am-form-group" style="margin:1rem 0 1rem;">
+		<div class="am-u-sm-12">
+			<input type="submit" class="am-btn am-btn-warning am-btn-lg am-btn-block" value="预约活动已结束" name="submit" disabled>
+		</div>
+	</div>
+	{else}
+<div class="mui-content mc-we7-home">
+		<div class="mui-banner" style="background-image:url({if !empty($activity['thumb'])}'{$activity['thumb']}'{else}'resource/images/head-bg.png'{/if}); background-repeat:no-repeat;background-size:cover;height:15rem;">
+			<div class="setting"><a href="{php echo $this->createMobileUrl('mydayu_yuyuepay', array('weid' => $_W['uniacid'], 'id' => $reid))}">我的预约</a></div>
+			<img src="{php echo tomedia($profile['avatar']);}" alt="" class="mui-logo mui-img-circle" />
+			<div class="mui-banner-info">
+			</div>
+			<div class="mui-row banner-nav">
+				<div class="mui-col-xs-6 mui-text-center">
+					<a href="{php echo url('mc/bond/credits', array('credittype' => 'credit2', 'type' => 'record', 'period' => '1'))}">
+						<span class="fa fa-rmb"></span>
+						{$creditnames[$behavior['currency']]['title']}: <span class="mui-ml5 mui-big">{$credits[$behavior['currency']]}</span>
+					</a>
+				</div>
+				<div class="mui-col-xs-6 mui-text-center">
+					<a href="{php echo url('mc/bond/credits', array('credittype' => 'credit1', 'type' => 'record', 'period' => '1'))}">
+						<span class="fa fa-database"></span>
+						{$creditnames[$behavior['activity']]['title']}: <span class="mui-ml5 mui-big">{$credits[$behavior['activity']]}</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	<form action="{php echo $this->createMobileUrl('dayu_yuyuepay', array('weid' => $_W['uniacid'], 'id' => $reid))}" class="tab-content clearfix" method="post" enctype="multipart/form-data" id="form">
+	
+	<div class="mui-input-group mui-mt15">
+		<div class="mui-input-row">
+			<label>姓名:</label>
+			<input type="text" name="member" id="member" value="{$profiles['realname']}"  placeholder="{$mcFields['realname']['title']}"/>
+		</div>
+		<div class="mui-input-row">
+			<label>手机:</label>
+			<input type="text" name="mobile" id="mobile" value="{$profiles['mobile']}"  placeholder="{$mcFields['mobile']['title']}"/>
+		</div>
+		<div class="mui-input-row">
+			<label>{$activity['xmname']}:</label>
+				<input class="mui-xmid" type="text" value="" readonly placeholder="请选择{$activity['xmname']}"/>
+				<input type="hidden" id="xmid" name="xmid" value="" required />
+				<script type="text/javascript">
+					$(".mui-xmid").on("tap", function(){
+						var $this = $(this);
+						util.poppicker({$arr}, function(items){
+							$this.val(items[0].text).next().val(items[0].value);
+						});
+					});
+				</script>
+		</div>
+		{if $activity['is_time']==0}
+		<div class="mui-input-row">
+				<label>{$activity['yuyuename']}:</label>
+			<input type="text" class="am-form-field" placeholder="{$yuyuetime}" name="yuyuetime" value="{$yuyuetime}" id="appDateTime" required>
+		</div>
+		{/if}
+		<div class="mui-input-row">
+			<label>支付方式:</label>
+				<input class="mui-paytype" type="text" value="在线支付" readonly placeholder="在线支付"/>
+				<input type="hidden" name="paytype" value="1"/>
+				<script type="text/javascript">
+					$(".mui-paytype").on("tap", function(){
+						var $this = $(this);
+						util.poppicker({data: [{"text":"在线支付","value":"1"}{if $activity['pay'] == 1},{"text":"线下付款","value":"9"}{/if}]}, function(items){
+							$this.val(items[0].text).next().val(items[0].value);
+						});
+					});
+				</script>
+		</div>
+	</div>
+	<div class="mui-input-group mui-mt15">
+	{loop $ds $field}
+		{if $field['type'] == 'text'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+			<input type="text" name="field_{$field['refid']}_{$field['bind']}" value="{$field['default']}"  placeholder="请填写{$field['title']}"/>
+		</div>
+		{/if}
+		
+		{if $field['type'] == 'number'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+			<input type="tel" name="field_{$field['refid']}_{$field['bind']}" value="{$field['default']}"  placeholder="请填写{$field['title']}"/>
+		</div>
+		{/if}
+		
+		{if $field['type'] == 'textarea'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+			<textarea name="field_{$field['refid']}_{$field['bind']}" rows="5" style="height:200px" placeholder="请填写{$field['title']}" {if $field['essential']}required{/if}>{$field['default']}</textarea>
+		</div>
+		{/if}
+		
+		{if $field['type'] == 'email'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+			<input type="text" name="field_{$field['refid']}_{$field['bind']}" value="{if $field['default']}{$field['default']}{else}@{/if}"/>
+		</div>
+		{/if}
+
+		{if $field['type'] == 'radio'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+		</div>
+			{php $i=1;}
+			{loop $field['options'] $v}
+			<div class="mui-input-row mui-radio mui-left">
+				<label>{$v}</label>
+				<input name="field_{$field['refid']}_{$field['bind']}" type="radio" value="{$v}" {if $i==1}checked{/if}>
+			</div>
+				{php $i++;}
+			{/loop}
+		{/if}
+		
+		{if $field['type'] == 'select'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+			<select name="field_{$field['refid']}_{$field['bind']}">
+			{loop $field['options'] $v}
+			<option value="{$v}" label="{$v}">{$v}</option>
+			{/loop}
+			</select>
+		</div>
+		{/if}
+		
+		{if $field['type'] == 'checkbox'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+		</div>
+			{php $i=1;}
+			{loop $field['options'] $v}
+			<div class="mui-input-row mui-checkbox  mui-left">
+				<label>{$v}</label>
+				<input name="field_{$field['refid']}_{$field['bind']}[]" type="checkbox" value="{$v}" {if $i==1}checked{/if}>
+			</div>
+				{php $i++;}
+			{/loop}
+		{/if}
+		
+		{if $field['type'] == 'calendar'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+			{php echo tpl_app_fans_form('birth', array('year' => $profile['birthyear'], 'month' => $profile['birthmonth'], 'day' => $profile['birthday']), $mcFields['birthyear']['title']);}
+		</div>
+		{/if}
+		
+		{if $field['type'] == 'reside'}
+		<div class="mui-input-row">
+			<label>{$field['title']}:</label>
+			{php echo tpl_app_fans_form('reside', array('province' => $profiles['resideprovince'], 'city' => $profiles['residecity'], 'district' => $profiles['residedist']), $mcFields['resideprovince']['title']);}
+		</div>
+		{/if}
+		
+		
+		{if $field['type'] == 'image'}
+		<div class="mui-image-row" style="background-color:#f9f9f9;">
+		<div class="mui-table-views mui-table-view-chevrons">
+		<div class="mui-table-view-cell">
+			<label>{$field['title']}:</label>
+				<div class="mui-pull-right">
+							{php echo tpl_form_field_image('field_' . $field['refid'] . '_' . $field['bind'], '');}
+				</div>
+		</div>
+		</div>
+		</div>
+		{/if}
+		{/loop}
+		</div>
+		
+		
+		
+	
+	<div class="mui-content-padded">
+		<input type="hidden" name="token" value="{$_W['token']}" />
+        <button class="mui-btn mui-btn-success mui-btn-block" name="submit" type="submit" id="showTool">立 即 提 交</button>
+	</div>
+	</form>
+	
+</div>
+	<script type="text/javascript">
+	
+        $(function () {
+			var currYear = (new Date()).getFullYear();	
+			var opt={};
+			opt.date = {preset : 'date'};
+			opt.datetime = {preset : 'datetime'};
+			opt.time = {preset : 'time'};
+	var nowData=new Date();
+			opt.default = {
+				theme: 'wp', //皮肤样式
+		        display: 'bottom', //显示方式 
+		        mode: 'scroller', //日期选择模式
+				dateFormat: 'yyyy-mm-dd',
+				lang: 'zh',
+				showNow: true,
+				nowText: "今天",
+        cancelText: '取消',
+        setText: '确定',
+		    //    startYear: currYear - 0, //开始年份
+		    //    endYear: currYear + 0 //结束年份
+		minDate: new Date(nowData.getFullYear(),nowData.getMonth(),nowData.getDate(),nowData.getHours()+{$activity['kaishi']},00), 
+		maxDate: new Date(nowData.getFullYear(),nowData.getMonth(),nowData.getDate()+{$activity['tianshu']},{$activity['jieshu']},00), 
+			};
+
+		  	var optDateTime = $.extend(opt['datetime'], opt['default']);
+		    $("#appDateTime").mobiscroll(optDateTime).datetime(optDateTime);
+        });
+		
+	$('#form').submit(function(){
+		if($.trim($(':input[name="xmid"]').val()) == '') {
+			mui.alert('请选择{$activity['xmname']}', '提示');
+			return false;
+		}
+			if($.trim($('#restime').val())==''){
+				$.toast('请选择{$activity['yuyuename']}', "cancel");
+				return false;
+			}
+		{loop $ds $field}
+		{if $field['essential']}
+		{if in_array($field['type'], array('text', 'calendar', 'email', 'radio'))}
+		if($.trim($(':text[name="field_{$field['refid']}_{$field['bind']}"]').val()) == '') {
+			$.toast("{$field['title']} 不能为空", "cancel");
+			return false;
+		}
+		{/if}
+		{if in_array($field['type'], array('image'))}
+		if($.trim($(':input[name="field_{$field['refid']}_{$field['bind']}"]').val()) == '') {
+			$.toast("{$field['title']} 必须上传", "cancel");
+			return false;
+		}
+		{/if}
+		{if in_array($field['type'], array('textarea'))}
+		if($.trim($('textarea[name="field_{$field['refid']}_{$field['bind']}"]').val()) == '') {
+			$.toast("{$field['title']} 必须填写", "cancel");
+			return false;
+		}
+		{/if}
+		{if in_array($field['type'], array('number'))}
+		var num = parseFloat($.trim($(':input[name="field_{$field['refid']}_{$field['bind']}"]').val()));
+		if(isNaN(num)) {
+			$.toast('{$field['title']} 必须输入数字.');
+			return false;
+		}
+		{/if}
+		{if in_array($field['type'], array('email'))}
+		var mail = $.trim($(':text[name="field_{$field['refid']}_{$field['bind']}"]').val());
+		if(!(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/i).test(mail)) {
+			$.toast("{$field['title']} 请正确邮箱地址", "cancel");
+			return false;
+		}
+		{/if}
+		{/if}
+		{/loop}
+		return true;
+	});
+    </script>
+	{/if}
+{php $footer_off = 1;}
+{template 'footers'}

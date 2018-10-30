@@ -1,0 +1,67 @@
+{template 'common/header'}
+{php load()->func('tpl')}
+<style>
+.account-basicinformation span{font-weight:700;}
+.account-stat-num > {padding:10px;}
+.account-stat-num > a{width:16.666%; float:left; font-size:16px; text-align:center;padding:10px 0 5px;}
+.account-stat-num > a.active{background-color:#0288d1;color:#fff;}
+.account-stat-num > a span{display:block; font-size:20px; font-weight:bold; color:#ef6c00;}
+.account-stat-num > a.active span, .account-stat-num > a.active dd{color:#fff;}
+.account-stat-num > a dd{display:block;font-size:14px; font-weight:bold; color:#666;}
+.account-stat-num > a dd i{font-size:18px;}
+</style>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">导出所有主题的预约记录</div>
+        <div class="panel-body">
+            <form action="./index.php" method="get" class="form-horizontal" role="form">
+                <input type="hidden" name="c" value="site" />
+                <input type="hidden" name="a" value="entry" />
+                <input type="hidden" name="m" value="dayu_yuyuepay" />
+                <input type="hidden" name="do" value="allmanage" />
+                <input type="hidden" name="paystatus" value="{$_GPC['paystatus']}" />
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-2 control-label">搜索条件</label>
+					<div class="col-xs-12 col-sm-9 col-lg-9">
+						<div class="input-group">
+							<span class="input-group-addon">手机号/姓名</span><input class="form-control" name="keywords" id="" type="text" value="{$_GPC['keywords']}" placeholder="可查询手机号 / 姓名">
+							<span class="input-group-addon">单号/微信单号</span><input class="form-control" name="orderid" id="" type="text" value="{$_GPC['orderid']}" placeholder="可查询订单号 / 微信订单号"> 
+						</div>
+					</div>                  
+				</div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">预约状态</label>
+                    <div class="col-xs-12 col-sm-5 col-lg-9">
+						<select class="form-control" id="status" name="status">
+									<option value="" {if $_GPC['status'] == ''}selected="selected"{/if}>全部</option>
+							{loop $arr2 $c}
+								{loop $state[$c] $d}
+									{if $info['paystatus'] == '2' && $c=='2'}
+									{else}
+									<option value="{$c}" {if $_GPC['status'] == $c}selected="selected"{/if}>{$d['name']}</option>
+									{/if}
+								{/loop}
+							{/loop}
+						</select>
+                    </div>
+                </div>
+                <div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-2 control-label">提交日期</label>
+                    <div class="col-xs-12 col-sm-9 col-lg-9">
+                        <div class='btn-group input-group'>
+                        {php echo tpl_form_field_daterange('time',array('starttime'=>date('Y-m-d', $starttime),'endtime'=>date('Y-m-d', $endtime)), true)}
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                        <input type="submit" name="export" value="导出匹配的数据" class="btn btn-primary">
+                        <a class="btn btn-default">全部 <span class="fa fa-cny"> {$sum_price_all['sum_money']}</span> <span class="badge">{$order_count_all}</span></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+<script>
+	$("#id").change(function(){		
+		$("#activity").submit();
+	});
+</script>
+{template 'common/footer'}
